@@ -1,0 +1,28 @@
+###
+POST {{url}}/api/Auth/login
+Content-Type: application/x-www-form-urlencoded
+
+
+username = {{username}} &
+password = {{password}}
+
+> {%
+    client.test("Token option exists", function () {
+        client.assert(response.body.hasOwnProperty("_Token"), "Cannot find 'token' option in response");
+    });
+    client.global.set("jwt", response.body._Token);
+%}
+
+###
+GET {{url}}/api/InvoiceInfo/Fin_CariKod
+Content-Type: application/x-www-form-urlencoded
+Authorization: {{jwt}}
+
+fin_code= {{fincode}} &
+customer_code= {{customer}}
+
+> {%
+    client.test("Request executed successfully", function () {
+        client.assert(response.status === 200, "Response status is not 200");
+    });
+%}
